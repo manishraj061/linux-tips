@@ -16,3 +16,24 @@ Enter to keep the current selection[+], or type selection number: 2
 openjdk version "1.8.0_191"
 OpenJDK Runtime Environment (build 1.8.0_191-b12)
 OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode)
+=======================================================================
+logstash issue:-
+[root@ip-172-31-24-216 ~]# echo 1 > /proc/sys/vm/overcommit_memory
+[root@ip-172-31-24-216 ~]# logstash -e 'input { stdin { } } output { stdout {} }'
+[root@ip-172-31-24-216 ~]# logstash -e 'input { stdin { } } output { stdout {} }'
+Sending Logstash logs to /root/logstash-6.6.0/logs which is now configured via log4j2.properties
+[2019-02-08T12:17:02,134][WARN ][logstash.config.source.multilocal] Ignoring the 'pipelines.yml' file because modules or command line options are specified
+[2019-02-08T12:17:02,170][INFO ][logstash.runner          ] Starting Logstash {"logstash.version"=>"6.6.0"}
+[2019-02-08T12:17:13,894][INFO ][logstash.pipeline        ] Starting pipeline {:pipeline_id=>"main", "pipeline.workers"=>1, "pipeline.batch.size"=>125, "pipeline.batch.delay"=>50}
+[2019-02-08T12:17:14,130][INFO ][logstash.pipeline        ] Pipeline started successfully {:pipeline_id=>"main", :thread=>"#<Thread:0x1283edc9 run>"}
+The stdin plugin is now waiting for input:
+[2019-02-08T12:17:14,239][INFO ][logstash.agent           ] Pipelines running {:count=>1, :running_pipelines=>[:main], :non_running_pipelines=>[]}
+[2019-02-08T12:17:14,670][INFO ][logstash.agent           ] Successfully started Logstash API endpoint {:port=>9600}
+hello world
+{
+          "host" => "ip-172-31-24-216",
+       "message" => "hello world",
+    "@timestamp" => 2019-02-08T12:18:11.868Z,
+      "@version" => "1"
+}
+
