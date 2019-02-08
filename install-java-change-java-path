@@ -1,0 +1,18 @@
+install java8
+yum install java-1.8*
+===================================
+change java path
+/usr/sbin/alternatives --config java
+
+There are 2 programs which provide 'java'.
+
+  Selection    Command
+-----------------------------------------------
+*+ 1           /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
+   2           /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
+
+Enter to keep the current selection[+], or type selection number: 2
+[root@ip-172-31-24-216 ~]# java -version
+openjdk version "1.8.0_191"
+OpenJDK Runtime Environment (build 1.8.0_191-b12)
+OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode)
