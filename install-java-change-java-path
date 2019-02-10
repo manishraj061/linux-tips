@@ -36,4 +36,14 @@ hello world
     "@timestamp" => 2019-02-08T12:18:11.868Z,
       "@version" => "1"
 }
+==================================================================================================
+install filebeat
+https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.0-linux-x86_64.tar.gz
+cd /usr/bin
+ln -s /root/filebeat-6.6.0-linux-x86_64/filebeat
+----------------------------------------------------------------------------------------------------
 
+install logstash
+https://artifacts.elastic.co/downloads/logstash/logstash-6.6.0.tar.gz
+
+================================================================================
