@@ -47,3 +47,30 @@ install logstash
 https://artifacts.elastic.co/downloads/logstash/logstash-6.6.0.tar.gz
 
 ================================================================================
+install elasticsearch service 
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+------
+cat /etc/yum.repos.d/elasticsearch.repo
+[elasticsearch-6.x]
+name=Elasticsearch repository for 6.x packages
+baseurl=https://artifacts.elastic.co/packages/6.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+---------------
+yum install elasticsearch
+systemctl daemon-reload
+systemctl enable elasticsearch.service
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+-----------------------------------------
+======================================================================
+install kibana
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+--------------------
+cat /etc/yum.repos.d/kibana.repo
+systemctl start kibana
+systemctl enable kibana
+====================================
