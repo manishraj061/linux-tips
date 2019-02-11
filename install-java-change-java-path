@@ -79,6 +79,8 @@ cat jvm.options
 -Xmx300m
 
 ---------------------------
+# ulimit -u 4096
+-------------------------------
 yum install elasticsearch
 systemctl daemon-reload
 systemctl enable elasticsearch.service
