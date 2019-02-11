@@ -1,3 +1,12 @@
+=========================================================
+User specific setting
+cat ~/.bashrc
+# User specific aliases and functions
+export ENVIRON=dev
+export SVN_EDITOR=/usr/bin/vim
+export PS1='\[\033[01;31m\]\u \[\033[01;36m\]\t \[\033[01;31m\]$ENVIRON\[\033[01;36m\] \h\[\033[00m\] \W:$'
+
+==========================================================
 install java8
 yum install java-1.8*
 ===================================
