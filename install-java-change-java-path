@@ -51,6 +51,9 @@ https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.0-linux-x86_6
 cd /usr/bin
 ln -s /root/filebeat-6.6.0-linux-x86_64/filebeat
 ----------------------------------------------------------------------------------------------------
+Tutorial file
+wget https://download.elastic.co/demos/logstash/gettingstarted/logstash-tutorial.log.gz
+----------------------------------------------------------------------------------------------------------
 
 install logstash
 https://artifacts.elastic.co/downloads/logstash/logstash-6.6.0.tar.gz
