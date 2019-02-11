@@ -69,6 +69,13 @@ enabled=1
 autorefresh=1
 type=rpm-md
 ---------------
+cat jvm.options
+# Xmx represents the maximum size of total heap space
+
+-Xms300m
+-Xmx300m
+
+---------------------------
 yum install elasticsearch
 systemctl daemon-reload
 systemctl enable elasticsearch.service
