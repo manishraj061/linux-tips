@@ -62,3 +62,51 @@ role_arn = arn:aws:iam::125262143502:role/KeyAdmin
 region = ap-south-1
 credential_source = Ec2InstanceMetadata
 
+===================================================================================================================
+cat KeyAdmin Role
+{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": [
+            "kms:ListKeys",
+            "kms:ListAliases",
+            "kms:DescribeKey",
+            "kms:ListKeyPolicies",
+            "kms:GetKeyPolicy",
+            "kms:GetKeyRotationStatus",
+            "iam:ListUsers",
+            "iam:ListRoles"
+        ],
+        "Resource": "*"
+    }
+}
+=============================================================
+cat PANEncrypt role
+{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": [
+            "kms:Encrypt",
+            "kms:ReEncrypt*",
+            "kms:GenerateDataKey*",
+            "kms:DescribeKey",
+            "kms:ListKeys"
+        ],
+        "Resource": "*"
+    }
+}
+=============================================================================================
+cat PANDecrypt role
+{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": [
+            "kms:Decrypt"
+        ],
+        "Resource": "*"
+    }
+}
+==============================================================================================
