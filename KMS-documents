@@ -1,0 +1,64 @@
+KMS CMK key policy
+[root@ip-172-31-17-94 ~]# cat Key_Policy
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAccessForKeyAdministrators",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::<Your_AWS_account_number>:role/KeyAdmin"
+      },
+      "Action": [
+        "kms:Create*",
+        "kms:Describe*",
+        "kms:Enable*",
+        "kms:List*",
+        "kms:Put*",
+        "kms:Update*",
+        "kms:Revoke*",
+        "kms:Disable*",
+        "kms:Get*",
+        "kms:Delete*",
+        "kms:ScheduleKeyDeletion",
+        "kms:CancelKeyDeletion"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowEncryptionWithTheKey",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::<Your_AWS_account_number>:role/PANEncrypt"
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey",
+        "kms:ListKeys"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowDecryptionWithTheKey",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::<Your_AWS_account_number>:role/PANDecrypt"
+      },
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+============================================================================================================
+[root@ip-172-31-17-94 ~]# cat .aws/config
+[default]
+region = ap-south-1
+[profile KeyAdmin]
+role_arn = arn:aws:iam::125262143502:role/KeyAdmin
+region = ap-south-1
+credential_source = Ec2InstanceMetadata
+
