@@ -58,9 +58,17 @@ KMS CMK key policy
 [default]
 region = ap-south-1
 [profile KeyAdmin]
-role_arn = arn:aws:iam::125262143502:role/KeyAdmin
+role_arn = arn:aws:iam::<Your-AWS-Account-Number>:role/KeyAdmin
 region = ap-south-1
 credential_source = Ec2InstanceMetadata
+[profile manishthird]
+role_arn = arn:aws:iam::<Your-AWS-Account-Number>:role/manishthird
+region = ap-south-1
+source_profile = manish-admin
+mfa_serial = arn:aws:iam::<Your-AWS-Account-Number>:mfa/manish-admin
+[profile manish-admin]
+region = ap-south-1
+
 
 ===================================================================================================================
 cat KeyAdmin Role
