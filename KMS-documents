@@ -132,3 +132,10 @@ IAM role trust policy
     }
   ]
 }
+===========================================================================================
+List of usefull commands.
+#aws kms create-key --profile KeyAdmin --description "Key used to encrypt and decrypt sensitive PAN data" --policy file://Key_Policy
+#aws kms create-alias --profile KeyAdmin --alias-name alias/SensitivePANKey --target-key-id arn:aws:kms:ap-south-1:<AWS_account_number>:key/<Key-ID>
+#aws kms list-keys --profile KeyAdmin
+#aws kms schedule-key-deletion --key-id <Desired-key-id> --pending-window-in-days 7
+#aws kms list-aliases --key-id arn:aws:kms:<Region>:<Your_AWS_Account>:key/<Key-id>
