@@ -122,3 +122,22 @@ KMS KEY Policy
         }
     ]
 }
+=======================================================================
+AWS CLI:
+--------------------------------
+Create encrypted volume:
+
+# aws ec2 create-volume --size 2 --region ap-south-1 \
+> --availability-zone ap-south-1a --volume-type gp2 \
+> --kms-key-id <ARN of KMS key> \
+> --profile default --encrypted
+-----------------------------------------------------------------
+Attach volume to instance :
+ # aws ec2 attach-volume --volume-id <volume-id> --instance-id <instance-id> --device /dev/sdh
+-----------------------------------------------------
+
+Detach volume from instance :
+
+# aws ec2 detach-volume --volume-id <volume-id> --instance-id <instance-id> --device /dev/sdh
+
+===============================================================================================================
