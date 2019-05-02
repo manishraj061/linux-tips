@@ -1,0 +1,70 @@
+[root@ip-172-31-20-229 ~]# cat roles/encrypt-volume/tasks/main.yml
+---
+# tasks file for encrypt-volume
+# #
+#- include: get-instance-id.yml
+- include: get-instance-id-2.yml
+
+
+===============================================================================
+[root@ip-172-31-20-229 ~]# cat roles/encrypt-volume/tasks/get-instance-id-2.yml
+- name: Ec2 facts on remote instance
+  ec2_metadata_facts:
+  register: ec2_facts
+
+
+- name: Select volumes by instance id
+  ec2_vol_facts:
+    region: "{{ region }}"
+    filters:
+      attachment.instance-id: "{{ ec2_facts.ansible_facts.ansible_ec2_instance_id }}"
+  register: volumeids
+
+- name: print volumeids output
+  debug:
+    msg: "{{ volumeids }}"
+
+- name: create snapshots
+  local_action:
+    module: ec2_snapshot
+    region: "{{ region }}"
+    volume_id: "{{ item.id }}"
+    wait: yes
+  with_items:
+    - "{{ volumeids.volumes }}"
+  register: snapshots
+
+- name: print snapshots
+  debug:
+    msg: "{{ item.item.attachment_set.device }} and {{ item.snapshot_id }} and {{ item.item.zone }}"
+    # msg: "{{snapshots.results}}"
+  with_items:
+    - "{{ snapshots.results}}"
+
+- name: Copy encrypted snapshots
+  local_action:
+    module: ec2_snapshot_copy
+    region: "{{ region }}"
+    source_region: "{{ region }}"
+    source_snapshot_id: "{{ item.snapshot_id }}"
+    description: "Encrypted snapshot copy of {{ item.snapshot_id }} "
+    encrypted: yes
+    kms_key_id: arn:aws:kms:ap-south-1:125262143502:key/5962db2c-6b88-47d6-88c1-7803277168fe
+    wait: yes
+  with_items:
+     - "{{ snapshots.results }}"
+  register: encrypted_snapshots
+
+- name: print encrypted snapshots
+  debug:
+    msg: "{{ item.snapshot_id }}"
+  with_items:
+    - "{{ encrypted_snapshots.results }}"
+==================================================================
+
+---
+- name: playbook to list volumes of instances
+  hosts: localhost
+  serial: 1
+  roles:
+   - { role: encrypt-volume, region: ap-south-1 }
