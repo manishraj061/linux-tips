@@ -141,3 +141,44 @@ Detach volume from instance :
 # aws ec2 detach-volume --volume-id <volume-id> --instance-id <instance-id> --device /dev/sdh
 
 ===============================================================================================================
+
+AWS Lambda for alert KMS unauthorized access:
+
+#!/usr/bin/python
+import json
+import requests
+webhookurl='https://hooks.slack.com/services/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'
+def lambda_handler(event, context):
+    data={'text': event['detail']['errorMessage']}
+    response = requests.post(webhookurl, data=json.dumps(data), headers={'Content-Type': 'application/json'})
+    print('Response: ' + str(response.text))
+    print('Response code: ' + str(response.status_code))
+    print event['detail']['errorMessage']
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
+    -----------------------------------------------------------------------------------------------------------------------
+    Upload python module to aws lambda 
+    python
+   29  mkdir package
+   30  mkdir my-function
+   31  cd my-function
+   32  mkdir package
+   33  cd package
+   34  pip install requests --target .
+   35  yum insall python-pip
+   36  yum install python-pip
+   37  pip install requests --target .
+   38  ll
+   39  zip -r9 ../function.zip
+   40  zip -r9 ../function.zip .
+   41  ll
+   42  cd ..
+   43  ll
+   44  vim slack.py
+   45  chmod 777 slack.py
+   46  zip -g function.zip function.py
+   47  zip -g function.zip slack.py
+   48  ll
+   49  aws lambda update-function-code --function-name lambda-test --zip-file fileb://function.zip
