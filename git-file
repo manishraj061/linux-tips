@@ -1,0 +1,74 @@
+git config --global user.name "Root user"
+git config --global user.email "root@localhost"
+cat .gitconfig
+ls -la
+cat .gitconfig
+git config --list
+======================================================================
+git config --system system.name "Git Repo Server 1"
+cat /etc/gitconfig
+[system]
+        name = Git Repo Server 1
+=======================================================================
+git config --global system.name "My Git Repo Server 1"
+cat .gitconfig
+git config --global core.editor vim
+========================================================================
+cat .gitconfig
+[user]
+        name = Root user
+        email = root@localhost
+[system]
+        name = My Git Repo Server 1
+[core]
+        editor = vim
+        pager = more
+        excludesfile = /root/.gitignore_global
+
+=========================================================================
+git config --global core.pager 'more'
+=========================================================================
+cat .gitconfig
+# git config --list
+system.name=Git Repo Server 1
+user.name=Root user
+user.email=root@localhost
+system.name=My Git Repo Server 1
+core.editor=vim
+core.pager=more
+core.excludesfile=/root/.gitignore_global
+
+====================================================================
+# vim .gitignore_global
+*~
+.DS_Store
+=====================================================================
+
+git config --global core.excludesfile ~/.gitignore_global
+git config --list
+cat .gitconfig
+mkdir gittest
+cd gittest/
+git init
+ls -la
+cd .git/
+ll
+cd ..
+ll
+echo "this is my first file" > test.txt
+git status
+git add test.txt
+git status
+git commit
+git status
+cd ..
+mkdir mydir
+cd mydir
+cp /etc/h* .
+ls -la
+git init
+git status
+git add *
+git status
+git commit -m "my new dur"
+git status
