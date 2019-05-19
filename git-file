@@ -256,4 +256,20 @@ git branch -v
 git describe --tags
 v1-1-g87cc622
 
-=============================================
+=======================BRANCHES======================
+cd mydir
+git status
+On branch master
+nothing to commit, working tree clean
+---------------------------------------
+git checkout -b development
+Switched to a new branch 'development'
+------------------------------------------
+git status
+On branch development
+nothing to commit, working tree clean
+------------------------------------------------------------
+git branch -a
+* development
+  master
+
