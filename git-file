@@ -272,4 +272,25 @@ nothing to commit, working tree clean
 git branch -a
 * development
   master
+=========================Merging=========================
 
+[root@ip-172-31-31-214 mydir]# git branch -a
+  development
+* master
+git status
+On branch master
+nothing to commit, working tree clean
+-----------------
+git merge development --no-ff  <------------------------------ Merging development branch into master branch into same repository "mydir"
+
+================================Logging==================
+ git log
+ git log -p -2
+ git log --stat
+ git log --pretty=oneline
+ git log --pretty=format:"%h: %an, %cn, %cd, - %s"
+ git log --pretty=format:"%h: %an, %cn, %cd, - %s"  --graph
+ git branch -a
+ git checkout master
+ git log --pretty=format:"%h: %an, %cn, %cd, - %s"  --graph
+ 
