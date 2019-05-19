@@ -72,3 +72,54 @@ git add *
 git status
 git commit -m "my new dur"
 git status
+=================CLONING=====================
+mkdir repos
+cd repos/
+----------------
+git clone ~/mydir/ clonedrepo
+Cloning into 'clonedrepo'...
+done.
+-------------------
+cd clonedrepo
+echo "this is a text file"> testfile.txt
+git add testfile.txt
+git commit -m "first cloned commit"
+-------------------------------------------
+git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+-----------------
+cd mydir
+----------------------------
+git pull ../repos/clonedrepo/
+remote: Counting objects: 3, done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 1), reused 0 (delta 0)
+Unpacking objects: 100% (3/3), done.
+From ../repos/clonedrepo
+ * branch            HEAD       -> FETCH_HEAD
+Updating c3c167a..1ab1c14
+Fast-forward
+ testfile.txt | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 testfile.txt
+--------------------------------------------
+cd ../repos/clonedrepo/
+git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+-------------------------
+git push
+Everything up-to-date
+------------------------
+git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+----------------------
+
