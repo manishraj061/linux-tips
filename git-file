@@ -122,4 +122,138 @@ Your branch is up to date with 'origin/master'.
 
 nothing to commit, working tree clean
 ----------------------
+=======================Tags==========================================
+cd mydir
+git branch -v
+* master 1ab1c14 first cloned commit
+-----------------------------------------------
+git tag tag1
+git branch -v
+* master 1ab1c14 first cloned commit
+---------------------------------------------
 
+git tag
+tag1
+-----------------------------------------------
+echo "tag1 post" > posttag.txt
+git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        posttag.txt
+
+nothing added to commit but untracked files present (use "git add"                                                                                                       to track)
+
+git add posttag.txt
+git status
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        new file:   posttag.txt
+
+
+git commit -m "post tag1 commit"
+
+[master 7daf2ba] post tag1 commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 posttag.txt
+------------------------------------------------------
+git status
+On branch master
+nothing to commit, working tree clean
+----------------------------------------------------
+git branch -v
+* master 7daf2ba post tag1 commit
+------------------------------------------------
+git show
+commit 7daf2babcb098e0b13f6e71446f52c4341ff891e (
+HEAD -> master)
+Author: Root user <root@localhost>
+Date:   Sun May 19 04:26:35 2019 +0000
+
+    post tag1 commit
+
+diff --git a/posttag.txt b/posttag.txt
+new file mode 100644
+index 0000000..74cb499
+--- /dev/null
++++ b/posttag.txt
+@@ -0,0 +1 @@
++tag1 post
+-----------------------------------------------------------
+git show tag1
+commit 1ab1c14f0f1970f28bd61a0dc326aead1d3c990f (
+tag: tag1)
+Author: Root user <root@localhost>
+Date:   Sun May 19 03:21:49 2019 +0000
+
+    first cloned commit
+
+diff --git a/testfile.txt b/testfile.txt
+new file mode 100644
+index 0000000..e9ea42a
+--- /dev/null
++++ b/testfile.txt
+@@ -0,0 +1 @@
++this is a text file
+-----------------------------------------------------------
+[root@ip-172-31-31-214 mydir]# ll
+total 44
+-rw-r--r-- 1 root root 1591 May 19 02:57 hibagent-config.cfg
+-rw-r--r-- 1 root root  721 May 19 02:57 hibinit-config.cfg
+-rw-r--r-- 1 root root    9 May 19 02:57 host.conf
+-rw-r--r-- 1 root root   45 May 19 02:57 hostname
+-rw-r--r-- 1 root root  126 May 19 02:57 hosts
+-rw-r--r-- 1 root root  370 May 19 02:57 hosts.allow
+-rw-r--r-- 1 root root  460 May 19 02:57 hosts.deny
+-rw-r--r-- 1 root root   10 May 19 04:25 posttag.txt
+-rw-r--r-- 1 root root   22 May 19 03:02 test.csv
+-rw-r--r-- 1 root root   20 May 19 03:35 testfile.txt
+-rw-r--r-- 1 root root   22 May 19 03:02 test.mf
+
+git describe --tags
+tag1-1-g7daf2ba
+git tag -a v1 -m "Version 1.0 Relea                                                                                                      se"
+git describe --tags                                                                                                                     v1
+git tag
+tag1
+v1
+----------------------------------------
+echo "tag2" > posttag2.txt
+git add posttag2.txt
+git commit -m "posttag2"
+[master 87cc622] posttag2
+ 1 file changed, 1 insertion(+)
+ create mode 100644 posttag2.txt
+----------------------------------------------
+git show v1
+tag v1
+Tagger: Root user <root@localhost>
+Date:   Sun May 19 04:33:14 2019 +0000
+
+Version 1.0 Release
+
+commit 7daf2babcb098e0b13f6e71446f52c4341ff891e (
+tag: v1)
+Author: Root user <root@localhost>
+Date:   Sun May 19 04:26:35 2019 +0000
+
+    post tag1 commit
+
+diff --git a/posttag.txt b/posttag.txt
+new file mode 100644
+index 0000000..74cb499
+--- /dev/null
++++ b/posttag.txt
+@@ -0,0 +1 @@
++tag1 post
+---------------------------
+git branch -v
+* master 87cc622 posttag2
+------------------------------
+git describe --tags
+v1-1-g87cc622
+
+=============================================
