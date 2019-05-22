@@ -18,3 +18,13 @@ Standard File	File Descriptors number	Use	Example
 stdin	  0	as Standard input 	Keyboard
 stdout	1	as Standard output 	Screen
 stderr	2	as Standard error 	Screen
+===========================================================
+cat demoscr3
+if [ $# -ne 2 ]
+then
+   echo "Error : Number are not supplied" 1>&2>/dev/null
+   echo "Usage : $0 number1 number2" 1>&2>/dev/null
+   exit 1
+fi
+ans=`expr $1 + $2`
+echo "Sum is $ans"
