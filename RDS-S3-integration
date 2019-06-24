@@ -1,4 +1,4 @@
-Canonical-ID:  
+Canonical-ID:  8e74868f4535bc6d1eca2848eecf47d015d03fe6e77f18263e829df282425399
 Dev account iam role === role/rds-s3-integration-role
 ========================
 rds-s3-integration-policy IAM policy
@@ -6,12 +6,35 @@ rds-s3-integration-policy IAM policy
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "Stmt1561037214309",
-            "Action": "s3:*",
+            "Sid": "Stmt1561111371195",
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Sid": "Stmt1561108904327",
+            "Action": [
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:ListBucketVersions"
+            ],
             "Effect": "Allow",
             "Resource": [
                 "arn:aws:s3:::acca-aws-examrds-datadump",
-                "arn:aws:s3:::acca-aws-examrds-datadump/*"
+                "arn:aws:s3:::acca-aws-examrds-datadump/rds-s3-integration/*"
+            ]
+        },
+        {
+            "Sid": "Stmt1561109015547",
+            "Action": [
+                "s3:GetObject*"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3:::acca-aws-examrds-datadump",
+                "arn:aws:s3:::acca-aws-examrds-datadump/rds-s3-integration/*"
             ]
         }
     ]
@@ -31,7 +54,11 @@ rds-s3-integration-policy IAM Trust policy
     }
   ]
 }
+==================================
+End of dev part
 ===================
+start of prod
+==================================
 Prod account IAM policy
 {
     "Version": "2012-10-17",
@@ -71,8 +98,8 @@ Prod account IAM trust policy
       "Effect": "Allow",
       "Principal": {
         "AWS": [
-          "arn:aws:iam::<dev-account-id>:root",
-          "arn:aws:iam::<dev-account-id>:role/rds-s3-integration-role"
+          "arn:aws:iam::223715066669:root",
+          "arn:aws:iam::223715066669:role/rds-s3-integration-role"
         ],
         "Service": "rds.amazonaws.com"
       },
@@ -90,7 +117,7 @@ prod bucket permission
             "Sid": "Stmt1561037439032",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::<dev-account-id>:role/rds-s3-integration-role"
+                "AWS": "arn:aws:iam::223715066669:role/rds-s3-integration-role"
             },
             "Action": "s3:*",
             "Resource": [
@@ -101,3 +128,4 @@ prod bucket permission
     ]
 }
 ===========================================================
+end of prod
