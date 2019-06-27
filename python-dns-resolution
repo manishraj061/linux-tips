@@ -1,0 +1,91 @@
+import boto3
+import sys
+import socket
+
+
+#Variables 
+url_bucket_name = 'acca-aws-infra-engineering'
+url_file= '/tmp/Dev_Test_URLs.csv'
+s3_filename_url_key = 'Dev_Test_URLs.csv'
+ToAddresses=['abc@example.com','xyz@example.com']
+FromAddress='abc@example.com'
+CcAddresses=[]
+BccAddresses=[]
+ReplyToAddresses=['abc@example.com']
+ReturnPath=''abc@example.com''
+#SourceArn='arn:aws:ses:eu-west-1:<ACCOUNT-ID>:identity/abc@example.com'
+SourceArn='arn:aws:ses:eu-west-1:<ACCOUNT-ID>:identity/abc@example.com'
+#ReturnPathArn='arn:aws:ses:eu-west-1:<ACCOUNT-ID>:identity/abc@example.com'
+ReturnPathArn='arn:aws:ses:eu-west-1:<ACCOUNT-ID>:identity/abc@example.com'
+Subject='Monitoring DNS Statuses'
+Charset='UTF-8'
+
+#Body=''
+#Html=''
+
+
+s3_client = boto3.client('s3')
+lines=[]
+
+
+
+def pingDNSEntries(event, context):
+
+    # Download the file to S3
+    s3_client.download_file(url_bucket_name,
+                            s3_filename_url_key,
+                            url_file)
+    ses_client = boto3.client('ses')
+    dns_list=[]
+    # Open the temp file
+    with open(url_file , 'r') as f:
+	lines = f.readlines()
+				
+    for line in lines:
+         try:
+         	socket.gethostbyname(line.strip().split(",")[0])		
+	 except Exception:
+        	dns_list.append("<h5 style='background-color:red;'>DNS entry "+line.strip().split(",")[0]+" is not resolvable</h5>")
+         else:
+     		if str(socket.gethostbyname(line.strip().split(",")[0])) == str(line.strip().split(",")[1]): 
+	                #dns_list.append("<h5 style='background-color:green;'>DNS entry "+line.strip().split(",")[0]+" is resolvable and the IP address matches</h5>")
+                        #print("<h5 style='background-color:green;'>DNS entry "+line.strip().split(",")[0]+" is resolvable and the IP address matches</h5>")  
+			print("")
+                else:
+			dns_list.append("<h5 style='background-color:FireBrick;'>DNS entry "+line.strip().split(",")[0]+" is resolvable but the IP address do not match</h5>") 
+
+
+    HtmlBody = '<h1> DNS Statuses</h1><br>'
+    for url in dns_list:
+	HtmlBody = HtmlBody+'<br>'+url+'</br>'
+
+    if dns_list:
+		ses_client.send_email(
+		Source=FromAddress,
+		Destination={
+			'ToAddresses': ToAddresses,
+			'CcAddresses': CcAddresses,
+			'BccAddresses': BccAddresses
+		},
+		Message={
+			'Subject': {
+				'Data': Subject,
+				'Charset': Charset
+			},
+			'Body': {
+				'Text': {
+					'Data': HtmlBody,
+					'Charset': Charset
+				},
+				'Html': {
+					'Data': HtmlBody,
+					'Charset': Charset
+				}
+			}
+		},
+    ReplyToAddresses=ReplyToAddresses,
+    ReturnPath=ReturnPath,
+    SourceArn=SourceArn,
+    ReturnPathArn=ReturnPathArn
+)
+    return 'Thanks, the function is executed'
