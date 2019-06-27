@@ -1,0 +1,100 @@
+#Lambda Function to restore an instance from AMI. 
+#This function can be triggered with cloudwatch event with constant JSON input of {"instance_id": "<instaceid>","ami_id": "<amid-id>"}
+
+import boto3
+import logging
+import time
+import datetime
+import re
+
+
+region='eu-west-1'
+
+ec2 = boto3.setup_default_session(region_name=region)
+ec2 = boto3.resource('ec2')
+client = boto3.client('ec2', region_name=region)
+
+def get_snapshots(volumeId):
+    return client.describe_snapshots(OwnerIds=['self'], Filters=[{'Name':'volume-id', 'Values':[volumeId]}])['Snapshots']
+    
+
+def parse_description(description):
+    regex = r"^Created by CreateImage\((.*?)\) for (.*?) "
+    matches = re.finditer(regex, description, re.MULTILINE)
+    for matchNum, match in enumerate(matches):
+        return match.groups()
+
+
+def RestoreFromAmi(event, context):
+    #instanceFilter = {'Name': event['tagName'], 'Values': event['tagValue']}
+    filters = [{'Name': 'tag:'+event['tagName'], 'Values': [event['tagValue']]}]
+    #filters = [{'Name':'tag:stack', 'Values':['ansible']}]
+    finalInstances = ec2.instances.filter(Filters=filters)
+    
+    
+    for instance in finalInstances:
+        instance_id = instance.id
+        print instance_id # to be removed
+        #instance1 = ec2.Instance(instance_id)
+        AZ = instance.placement['AvailabilityZone']
+        print instance.state['Name']
+        if instance.state['Name'] != 'stopped':
+            instance.stop()
+            STATE = instance.state['Name']
+    
+# To ensure instance is stopped before 
+
+            cnt = 0
+            while STATE != 'stopped':
+                time.sleep(5)
+                instance1 = ec2.Instance(instance_id)
+                STATE = instance1.state['Name']
+                cnt += 1
+                if cnt > 30:
+                    return 'Instance(s) taking too long to stop, re-run the function once instance(s) stopped'
+                    break
+    
+    
+        volId = []
+        attachedTo = []
+    
+        volumes = instance.volumes.all()
+        for v in volumes:
+            print instance_id # to be removed
+            print type(instance_id) # to be removed
+            Volume_Id = v.id
+            volume1 = ec2.Volume(Volume_Id)
+            VolType = volume1.volume_type
+            volId.append(Volume_Id)
+            AMI_DICT = eval(event['ami_id'])
+            print AMI_DICT # can be removed
+            print type(AMI_DICT)
+            AMI_ID = AMI_DICT[instance_id]
+            print AMI_ID # can be removed
+            AttachedDevice = v.attachments[0]['Device']
+            attachedTo.append(v.attachments[0]['Device'])
+        
+        
+            for snap in get_snapshots(v.id):
+                try: 
+                    if 'Created by CreateImage' in snap['Description'][0:22]:
+                        snapdes = snap['Description']
+                        snapshotid = snap['SnapshotId']
+                        if snapdes[snapdes.find('ami'):snapdes.find(' ',snapdes.find('ami'))] == AMI_ID:
+                        
+                            newVolume = client.create_volume(AvailabilityZone=AZ, SnapshotId=snapshotid,VolumeType=VolType)
+                        
+                            print newVolume
+                            newVolumeId = newVolume['VolumeId']
+                            time.sleep(5)
+                            detachedVolume = client.detach_volume(Device=AttachedDevice,InstanceId=instance_id, VolumeId=Volume_Id)
+                            print detachedVolume['VolumeId']
+                        
+                            time.sleep(5)
+                        
+                            attachedVolume = client.attach_volume(Device=AttachedDevice,InstanceId=instance_id, VolumeId=newVolumeId)
+
+                except ValueError:
+                    continue
+            
+#End of Function
