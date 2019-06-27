@@ -1,0 +1,64 @@
+input format: {   "action": "start/stop",   "tagName": "Environment",   "tagValue": "Report Engine User Acceptance Testing" }
+---------------------------------------------
+import boto3
+import logging
+
+#Region where the EC2 instances are running
+region='eu-west-1'
+
+#Initializing the Boto3 EC2 client
+ec2 = boto3.setup_default_session(region_name=region)
+ec2 = boto3.resource('ec2')
+
+#Setup logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+#Variables for filtering based on Instance state and shutdown tag
+instanceRunningStateFilter = {'Name': 'instance-state-name',
+                           'Values': ['running']}
+instanceStoppedStateFilter = {'Name': 'instance-state-name',
+                           'Values': ['stopped']}
+tagShutdownFilter = {'Name': 'tag:Shutdown', 'Values': ['True']}
+
+# Function to Manage the Instances
+def manageInstances(event, context):
+    
+    #Get the action and Filter tag name and value from the event and assign to the variables.
+    action=event['action']
+    tagFilter = {'Name': 'tag:'+event['tagName'], 'Values': [event['tagValue']]}
+    
+    #Create the Filter list
+    InstancesFilters = []
+    if action == 'start':
+        InstancesFilters.append(instanceStoppedStateFilter)
+    if action == 'stop':
+        InstancesFilters.append(instanceRunningStateFilter)
+    InstancesFilters.append(tagShutdownFilter)
+    InstancesFilters.append(tagFilter)
+
+    #Filter the instances based on the Filter List 
+    filteredInstances = ec2.instances.filter(Filters=InstancesFilters)
+
+    #Add the filtered instances' ids to a list
+    filteredInstancesIds=[]
+    for instance in filteredInstances:
+        filteredInstancesIds.append(instance.id)
+    
+    #Parse the ID list, get the name and stop or start the instances
+    for instanceId in filteredInstancesIds:
+        instance = ec2.Instance(instanceId)
+        for tags in instance.tags:
+            if tags['Key'] == 'Name':
+                instancename = tags['Value']
+        print 'Trying to '+action+' the Instance ' + instancename+' ('+instanceId+').'
+        logger.info('Trying to '+action+' the Instance ' + instancename+' ('+instanceId+').')
+        instance = ec2.Instance(instanceId)
+        if action == 'stop':
+            instance.stop()
+            print ''
+        elif action=='start':
+            instance.start()
+            print ''
+            
+    return 'Thanks, the function manageInstances has finished execution'
