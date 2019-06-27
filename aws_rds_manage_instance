@@ -1,0 +1,59 @@
+Input format: {   "action": "start",   "DBInstanceIdentifier": "uat-soa-rds01" }
+---------------------------------------
+import boto3
+import time
+import logging
+import botocore
+
+#Region where the EC2 instances are running
+region='eu-west-1'
+
+rds_client = boto3.client('rds')
+
+#Setup logging
+logging.basicConfig()
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+waitTime=10
+
+def manageRdsInstances(event, context):
+    
+    action=event['action']
+    DBInstanceIdentifier=event['DBInstanceIdentifier']
+    
+    print('Trying to '+action+' the database instance ' + DBInstanceIdentifier)
+    logger.info('Trying to '+action+' the database instance ' + DBInstanceIdentifier)
+    
+    if action == 'start':
+        try:
+            rds_client.start_db_instance(DBInstanceIdentifier=DBInstanceIdentifier)
+            time.sleep(waitTime)
+        
+            
+            while ( rds_client.describe_db_instances(DBInstanceIdentifier=DBInstanceIdentifier)['DBInstances'][0]['DBInstanceStatus'] != 'available'):
+                time.sleep(waitTime)
+        
+        
+            print('Database instance ' + DBInstanceIdentifier + ' is available now')
+            logger.info('Database instance ' + DBInstanceIdentifier + ' is available now')
+        
+        except botocore.exceptions.ClientError as e:
+            #if 'DBInstanceNotFound' in e.response['Error']['Message']:
+            print(e.response['Error']['Message'])
+            #print('DB instance'+ DBInstanceIdentifier + 'does not exist' )
+            #else:
+            #    raise
+    elif action == 'stop':
+        rds_client.stop_db_instance(DBInstanceIdentifier=DBInstanceIdentifier)
+        time.sleep(waitTime)
+        
+        while ( rds_client.describe_db_instances(DBInstanceIdentifier=DBInstanceIdentifier)['DBInstances'][0]['DBInstanceStatus'] != 'stopped'):
+            time.sleep(waitTime)
+        
+        print('Database instance ' + DBInstanceIdentifier + ' is stopped now')
+        logger.info('Database instance ' + DBInstanceIdentifier + ' is stopped now')
+    
+    else:
+        print('Invalid action, check your input')
+    
+    return 'Thanks, the function manageRdsInstances has finished execution'
