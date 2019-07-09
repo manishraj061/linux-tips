@@ -1,0 +1,13 @@
+command to check validity of internal ssl certificates
+
+echo | openssl s_client -connect int.exams.acca-awscloud.net:443 -servername int.exams.acca-awscloud.net 2>/dev/null | openssl x509 -noout -dates
+
+Command to check ssl validity
+
+openssl s_client -connect int.exams.acca-awscloud.net:443 -servername int.exams.acca-awscloud.net
+
+
+=============================
+command to check ssl validity
+
+openssl x509 -in zabbix.eu-west-1.acca-awscloud.net.crt-2019 -noout -text | less
