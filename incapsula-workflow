@@ -1,0 +1,11 @@
+exams.apps.accaglobal.com---->route53---Cname record----->incapsula-exams.acca-awscloud.net---->
+exams.apps.accaglobal.com---->route53---Cname record----->incapsula-dns-provided-dns-records---->incapsula-exams.acca-awscloud.net--route53 Alias record-->dualstack.prd-exams-lb-front-892615672.eu-west-1.elb.amazonaws.com
+
+9540531874
+
+
+ sudo mv rstudio.apps.accaglobal.com.crt /etc/pki/tls/certs/
+ sudo mv rstudio.apps.accaglobal.com.pem /etc/pki/tls/private/
+
+REQ3954273
+C:\Users\kumama\AppData\Local\Programs\Python\Python37-32\
