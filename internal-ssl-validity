@@ -11,3 +11,5 @@ openssl s_client -connect int.exams.acca-awscloud.net:443 -servername int.exams.
 command to check ssl validity
 
 openssl x509 -in zabbix.eu-west-1.acca-awscloud.net.crt-2019 -noout -text | less
+
+openssl x509 -in B2B-API.apps.accaglobal.com.crt-2018 -noout -text | less
