@@ -294,3 +294,10 @@ git merge development --no-ff  <------------------------------ Merging developme
  git checkout master
  git log --pretty=format:"%h: %an, %cn, %cd, - %s"  --graph
  
+====================
+FAQ
+Q1: Remove files from git not from hard drive.
+Ans: [ec2-user@ip-172-31-26-91 gittest]$ git rm --cached README
+rm 'README'
+
+
