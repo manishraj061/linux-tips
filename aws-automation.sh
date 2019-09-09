@@ -14,6 +14,16 @@ fi
 vpcid=$(aws ec2 create-vpc --cidr-block $cidr|jq .Vpc.VpcId --raw-output)
 echo $vpcid
 #=================================================Creating InternetGateway=====================================
+echo "$(tput setaf 2) Creating InternetGateway $(tput sgr0)"
 igwid=$(aws ec2 create-internet-gateway|jq .InternetGateway.InternetGatewayId --raw-output)
 echo $igwid
+echo "$(tput setaf 2) Attachng InternetGateway $(tput sgr0)"
 aws ec2 attach-internet-gateway --internet-gateway-id $igwid --vpc-id $vpcid
+#=============================================Creating routetable=============================================
+echo "$(tput setaf 2)Creating Routetable $(tput sgr0)"
+routetableid=$(aws ec2 create-route-table --vpc-id $vpcid|jq .RouteTable.RouteTableId --raw-output)
+echo $routetableid
+#=============================================creating public route ====================================================
+echo "$(tput setaf 2)Creating public route $(tput sgr0)"
+assoc_op=$(aws ec2 create-route --route-table-id $routetableid  --destination-cidr-block 0.0.0.0/0 --gateway-id $igwid|jq .Return --raw-output)
+echo $assoc_op
