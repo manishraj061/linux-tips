@@ -2,11 +2,11 @@
 echo 'Creating Network Segmnet
 ======================================='
 #================================================Creating VPC================================================
-read -p "$(tput setaf 2) Please enter cidr of vpc: $(tput sgr0)" cidr
+read -p "$(tput setaf 2) Please enter cidr of vpc (eg. 192.168.0.0/16) : $(tput sgr0)" cidr
 read -p "$(tput setaf 2) Do you want to create public routetable (enter yes or no ) : $(tput sgr0)" pub_response
 read -p "$(tput setaf 2) Do you want to create private routetable (enter yes or no ) : $(tput sgr0)" priv_response
-read -p "$(tput setaf 2) enter public subnet cidr block (eg. 192.168.0.0/24) : $(tput sgr0)" pub_subnet_cidr
-read -p "$(tput setaf 2) enter private subnet cidr block (eg. 192.168.0.0/24) : $(tput sgr0)" priv_subnet_cidr
+read -p "$(tput setaf 2) enter public subnet cidr block (eg. 192.168.1.0/24) : $(tput sgr0)" pub_subnet_cidr
+read -p "$(tput setaf 2) enter private subnet cidr block (eg. 192.168.2.0/24) : $(tput sgr0)" priv_subnet_cidr
 read -p "$(tput setaf 2) enter name of Availability Zone  : $(tput sgr0)" az
 listofaz=$(aws ec2 describe-availability-zones --filters Name=region-name,Values=ap-south-1|jq .AvailabilityZones[].ZoneName --raw-output)
 existing_cidr=$(aws ec2 describe-vpcs --filters "Name=cidr,Values=$cidr" --query Vpcs[].CidrBlockAssociationSet[][CidrBlock][0]|jq .[0] --raw-output)
