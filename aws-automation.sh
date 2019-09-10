@@ -13,7 +13,7 @@ existing_cidr=$(aws ec2 describe-vpcs --filters "Name=cidr,Values=$cidr" --query
 if [ $cidr == $existing_cidr ]
 then
                 echo "$(tput setaf 1)cidr already exist please use different cidr$(tput sgr0)"
-                vpcid=$(aws ec2 describe-vpcs --filters "Name=cidr,Values=10.0.0.0/16" --query Vpcs[]|jq .[].VpcId --raw-output)
+                vpcid=$(aws ec2 describe-vpcs --filters "Name=cidr,Values=$cidr" --query Vpcs[]|jq .[].VpcId --raw-output)
                 echo 'VPC ID : ' $vpcid
 fi
 
