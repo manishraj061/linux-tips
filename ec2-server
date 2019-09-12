@@ -1,0 +1,80 @@
+#!/bin/bash
+read -p "$(tput setaf 2) Please enter bucket name  : $(tput sgr0)" bucket
+read -r -d '' IAM_POLICY <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:Get*",
+                "s3:List*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::$bucket/shared/*"
+            ]
+        }
+    ]
+}
+EOF
+echo "$IAM_POLICY" > policy.json
+read -r -d '' IAM_EC2_TRUST_POLICY << EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+echo "$IAM_EC2_TRUST_POLICY" > ec2_trust_policy.json
+policy_op=$(aws iam list-policies --scope Local|jq -c '.Policies[]| select(.PolicyName | contains("s3bucket_access"))'|jq .PolicyName --raw-output)
+echo "policy : $policy_op "
+
+if [ -z $policy_op ]
+then
+    echo "policy is null"
+fi
+if [ $policy_op == s3bucket_access ]
+then
+ echo "Policy exist"
+fi
+if [ -n $policy_op ] || [ $policy_op != s3bucket_access ]
+then
+echo "Creating s3bucket_access policy "
+policy_arn=$(aws iam create-policy --policy-name s3bucket_access --policy-document file://policy.json|jq .Policy.Arn --raw-output)
+fi
+role_op=$(aws iam list-roles |jq -c ' .Roles[]| select(.RoleName | contains("S3AccessRole"))'|jq .RoleName --raw-output)
+if [ -z $role_op ]
+then
+   echo "role is null "
+fi
+if [ $role_op == S3AccessRole ]
+then
+   echo ""Role exist"
+if [ -n $role_op ]|| [ $role_op != S3AccessRole ]
+then
+   echo "Creating Role S3AccessRole and Attaching policy s3bucket_access to role"
+   role_name=$(aws iam create-role --role-name S3AccessRole --assume-role-policy-document file://ec2_trust_policy.json|jq .Role.RoleName --raw-output)
+   aws iam attach-role-policy --role-name $role_name --policy-arn $policy_arn
+fi
+instanceprofile_op=$(aws iam list-instance-profiles|jq -c '.InstanceProfiles[]| select(.InstanceProfileName | contains("S3AccessRole"))'|jq .InstanceProfileName --raw-output)
+if [ -z $instanceprofile_op ]
+then
+   echo "instance profile is null "
+fi
+if [ $instanceprofile_op == S3AccessRole ]
+then
+   echo "InstanceProfile exist"
+fi
+if [ -n $instanceprofile_op ]|| [ $instanceprofile_op != S3AccessRole ]
+then
+   echo "Creating InstanceProfile S3AccessRole and adding it to role S3AccessRole"
+   instance_profilename=$(aws iam create-instance-profile --instance-profile-name S3AccessRole|jq .InstanceProfile.InstanceProfileName --raw-output)
+   aws iam add-role-to-instance-profile --role-name S3AccessRole  --instance-profile-name $instance_profilename
+fi
