@@ -1,0 +1,1 @@
+for i in {1..10}; do localtime=$(date +%s.%N); awstime=$(ssh -q ec2-user@xx.xx.xx.xx "date +%s.%N");difftime=$(echo "${localtime}-${awstime}" | bc); printf "%-30s %17s %40s\n" "localtime" "awstime" "difftime (local-aws)"; printf "%-30s %30s %20s\n" "${localtime}" "${awstime}" "${difftime}"; printf "\n"; done
